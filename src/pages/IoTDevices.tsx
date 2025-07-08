@@ -1,15 +1,226 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/Layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Zap, Wifi, WifiOff, Plus, Search, Settings, AlertTriangle } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { 
+  Camera, 
+  Zap, 
+  Wifi, 
+  WifiOff, 
+  Plus, 
+  Search, 
+  Settings, 
+  AlertTriangle,
+  Monitor,
+  Battery,
+  Router,
+  Eye,
+  Wrench,
+  Calendar,
+  Globe,
+  Moon,
+  Sun,
+  Languages,
+  ChevronDown,
+  Play,
+  Filter,
+  BarChart3,
+  Activity,
+  Signal,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Download,
+  Upload
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const IoTDevices = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [deviceFilter, setDeviceFilter] = useState('all');
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [currentLang, setCurrentLang] = useState('en');
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [isRTL, setIsRTL] = useState(false);
+  const [showStreamModal, setShowStreamModal] = useState(null);
+  const [showSettingsModal, setShowSettingsModal] = useState(null);
+  const [showAddDeviceModal, setShowAddDeviceModal] = useState(false);
+  const [selectedCalibrateDevice, setSelectedCalibrateDevice] = useState(null);
+  const [realTimeUpdates, setRealTimeUpdates] = useState(true);
+
+  // Languages and translations
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'ar', name: 'العربية', flag: '🇹🇳' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
+  ];
+
+  const translations = {
+    en: {
+      title: "IoT Devices",
+      subtitle: "Manage cameras, sensors, and connected devices",
+      addDevice: "Add Device",
+      networkSettings: "Network Settings",
+      cameras: "Cameras",
+      sensors: "Sensors", 
+      networkStatus: "Network Status",
+      online: "Online",
+      offline: "Offline",
+      warning: "Warning",
+      excellent: "Excellent",
+      good: "Good",
+      poor: "Poor",
+      searchDevices: "Search devices...",
+      allDevices: "All Devices",
+      onlineOnly: "Online Only",
+      offlineOnly: "Offline Only",
+      viewStream: "View Stream",
+      calibrate: "Calibrate",
+      settings: "Settings",
+      lastSeen: "Last seen",
+      monitoring: "Monitoring",
+      battery: "Battery",
+      lastReading: "Last reading",
+      networkHealth: "Network Health",
+      stable: "Stable",
+      uptime: "uptime",
+      bandwidthUsage: "Bandwidth Usage",
+      activeStreams: "Active Streams",
+      recentActivity: "Recent Activity"
+    },
+    ar: {
+      title: "أجهزة إنترنت الأشياء",
+      subtitle: "إدارة الكاميرات والمستشعرات والأجهزة المتصلة",
+      addDevice: "إضافة جهاز",
+      networkSettings: "إعدادات الشبكة", 
+      cameras: "الكاميرات",
+      sensors: "المستشعرات",
+      networkStatus: "حالة الشبكة",
+      online: "متصل",
+      offline: "غير متصل",
+      warning: "تحذير",
+      excellent: "ممتاز",
+      good: "جيد",
+      poor: "ضعيف",
+      searchDevices: "البحث عن الأجهزة...",
+      allDevices: "جميع الأجهزة",
+      onlineOnly: "المتصلة فقط",
+      offlineOnly: "غير المتصلة فقط",
+      viewStream: "عرض البث",
+      calibrate: "معايرة",
+      settings: "الإعدادات",
+      lastSeen: "آخر ظهور",
+      monitoring: "المراقبة",
+      battery: "البطارية",
+      lastReading: "آخر قراءة",
+      networkHealth: "صحة الشبكة",
+      stable: "مستقر",
+      uptime: "وقت التشغيل",
+      bandwidthUsage: "استخدام النطاق الترددي",
+      activeStreams: "البث النشط",
+      recentActivity: "النشاط الأخير"
+    },
+    fr: {
+      title: "Appareils IoT",
+      subtitle: "Gérer les caméras, capteurs et appareils connectés",
+      addDevice: "Ajouter un appareil",
+      networkSettings: "Paramètres réseau",
+      cameras: "Caméras",
+      sensors: "Capteurs",
+      networkStatus: "État du réseau",
+      online: "En ligne",
+      offline: "Hors ligne", 
+      warning: "Avertissement",
+      excellent: "Excellent",
+      good: "Bon",
+      poor: "Faible",
+      searchDevices: "Rechercher des appareils...",
+      allDevices: "Tous les appareils",
+      onlineOnly: "En ligne seulement",
+      offlineOnly: "Hors ligne seulement",
+      viewStream: "Voir le flux",
+      calibrate: "Calibrer",
+      settings: "Paramètres",
+      lastSeen: "Vu pour la dernière fois",
+      monitoring: "Surveillance",
+      battery: "Batterie",
+      lastReading: "Dernière lecture",
+      networkHealth: "Santé du réseau",
+      stable: "Stable",
+      uptime: "temps de fonctionnement",
+      bandwidthUsage: "Utilisation de la bande passante",
+      activeStreams: "Flux actifs",
+      recentActivity: "Activité récente"
+    },
+    de: {
+      title: "IoT-Geräte",
+      subtitle: "Kameras, Sensoren und verbundene Geräte verwalten",
+      addDevice: "Gerät hinzufügen",
+      networkSettings: "Netzwerkeinstellungen",
+      cameras: "Kameras",
+      sensors: "Sensoren",
+      networkStatus: "Netzwerkstatus",
+      online: "Online",
+      offline: "Offline",
+      warning: "Warnung",
+      excellent: "Ausgezeichnet",
+      good: "Gut",
+      poor: "Schlecht",
+      searchDevices: "Geräte suchen...",
+      allDevices: "Alle Geräte",
+      onlineOnly: "Nur online",
+      offlineOnly: "Nur offline",
+      viewStream: "Stream anzeigen",
+      calibrate: "Kalibrieren",
+      settings: "Einstellungen",
+      lastSeen: "Zuletzt gesehen",
+      monitoring: "Überwachung",
+      battery: "Batterie",
+      lastReading: "Letzte Messung",
+      networkHealth: "Netzwerkzustand",
+      stable: "Stabil",
+      uptime: "Betriebszeit",
+      bandwidthUsage: "Bandbreitennutzung",
+      activeStreams: "Aktive Streams",
+      recentActivity: "Letzte Aktivität"
+    }
+  };
+
+  const t = translations[currentLang] || translations.en;
+
+  // Theme and language management
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    setIsRTL(currentLang === 'ar');
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = currentLang;
+  }, [currentLang]);
+
+  // Real-time status updates simulation
+  useEffect(() => {
+    if (realTimeUpdates) {
+      const interval = setInterval(() => {
+        // Simulate real-time updates
+        console.log('Updating device statuses...');
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [realTimeUpdates]);
 
   const cameras = [
     {

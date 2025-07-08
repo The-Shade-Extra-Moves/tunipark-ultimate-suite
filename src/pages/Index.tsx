@@ -1,8 +1,8 @@
 
-import Dashboard from './Dashboard';
+import Landing from './Landing';
 
 const Index = () => {
-  return <Dashboard />;
+  return <Landing />;
 };
 
 export default Index;
