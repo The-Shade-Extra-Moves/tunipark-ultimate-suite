@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Plus, Search, Settings, Camera, Zap, Car } from 'lucide-react';
+import { AddSpaceModal } from '@/components/Modals/AddSpaceModal';
+import { ConfigureSpaceModal } from '@/components/Modals/ConfigureSpaceModal';
+import { ViewSpaceModal } from '@/components/Modals/ViewSpaceModal';
+import { SetupWizardModal } from '@/components/Modals/SetupWizardModal';
 
 interface ParkingSpace {
   id: string;
@@ -66,8 +70,37 @@ const mockSpaces: ParkingSpace[] = [
 const ParkingSpaces = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedZone, setSelectedZone] = useState('all');
+  const [spaces, setSpaces] = useState<ParkingSpace[]>(mockSpaces);
+  
+  // Modal states
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [configureModalOpen, setConfigureModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [wizardModalOpen, setWizardModalOpen] = useState(false);
+  const [selectedSpace, setSelectedSpace] = useState<ParkingSpace | null>(null);
 
-  const filteredSpaces = mockSpaces.filter(space => {
+  // Handler functions
+  const handleAddSpace = (newSpace: ParkingSpace) => {
+    setSpaces([...spaces, newSpace]);
+  };
+
+  const handleUpdateSpace = (updatedSpace: ParkingSpace) => {
+    setSpaces(spaces.map(space => 
+      space.id === updatedSpace.id ? updatedSpace : space
+    ));
+  };
+
+  const handleConfigureClick = (space: ParkingSpace) => {
+    setSelectedSpace(space);
+    setConfigureModalOpen(true);
+  };
+
+  const handleViewClick = (space: ParkingSpace) => {
+    setSelectedSpace(space);
+    setViewModalOpen(true);
+  };
+
+  const filteredSpaces = spaces.filter(space => {
     const matchesSearch = space.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          space.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesZone = selectedZone === 'all' || space.zone === selectedZone;
@@ -101,7 +134,10 @@ const ParkingSpaces = () => {
             <h1 className="text-2xl font-bold text-gray-900">Parking Spaces</h1>
             <p className="text-gray-600">Manage and configure your parking spaces</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={() => setAddModalOpen(true)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add Space
           </Button>
@@ -185,11 +221,20 @@ const ParkingSpaces = () => {
 
                 {/* Actions */}
                 <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleConfigureClick(space)}
+                  >
                     <Settings className="w-4 h-4 mr-1" />
                     Configure
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewClick(space)}
+                  >
                     View
                   </Button>
                 </div>
@@ -205,12 +250,41 @@ const ParkingSpaces = () => {
               <Plus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Add New Parking Space</h3>
               <p className="text-gray-600 mb-4">Configure cameras, sensors, and pricing for new spaces</p>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => setWizardModalOpen(true)}
+              >
                 Start Setup Wizard
               </Button>
             </div>
           </CardContent>
         </Card>
+
+        {/* All Modals */}
+        <AddSpaceModal
+          open={addModalOpen}
+          onOpenChange={setAddModalOpen}
+          onSpaceAdded={handleAddSpace}
+        />
+        
+        <ConfigureSpaceModal
+          open={configureModalOpen}
+          onOpenChange={setConfigureModalOpen}
+          space={selectedSpace}
+          onSpaceUpdated={handleUpdateSpace}
+        />
+        
+        <ViewSpaceModal
+          open={viewModalOpen}
+          onOpenChange={setViewModalOpen}
+          space={selectedSpace}
+        />
+        
+        <SetupWizardModal
+          open={wizardModalOpen}
+          onOpenChange={setWizardModalOpen}
+          onSpaceCreated={handleAddSpace}
+        />
       </div>
     </MainLayout>
   );
