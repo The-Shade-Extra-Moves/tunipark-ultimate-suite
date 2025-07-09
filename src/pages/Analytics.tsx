@@ -1,9 +1,102 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MainLayout } from '@/components/Layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, TrendingUp, Users, Clock, Download, Calendar } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, AreaChart, Area } from 'recharts';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { 
+  BarChart3, 
+  TrendingUp, 
+  TrendingDown,
+  Users, 
+  Clock, 
+  Download, 
+  Calendar,
+  DollarSign,
+  Car,
+  Zap,
+  Brain,
+  Filter,
+  Search,
+  RefreshCw,
+  Target,
+  AlertTriangle,
+  CheckCircle,
+  Eye,
+  MapPin,
+  BarChart,
+  PieChart,
+  Activity,
+  Smartphone,
+  Globe,
+  Moon,
+  Sun,
+  Settings,
+  FileText,
+  Share2,
+  MessageSquare,
+  Lightbulb,
+  TrendingDown as TrendingDownIcon,
+  Gauge,
+  Layers,
+  Maximize2,
+  ChevronRight,
+  Info,
+  Wifi,
+  WifiOff,
+  Cpu,
+  Database,
+  RotateCcw,
+  Play,
+  Pause,
+  ArrowUpRight,
+  ArrowDownRight,
+  Percent,
+  Timer,
+  Building,
+  Radar as RadarIcon,
+  Shield,
+  Award,
+  ThumbsUp,
+  ThumbsDown,
+  Stars,
+  Bookmark,
+  ArrowRight,
+  ExternalLink
+} from 'lucide-react';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  BarChart as RechartsBarChart, 
+  Bar, 
+  AreaChart, 
+  Area, 
+  PieChart as RechartsPieChart,
+  Cell,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ComposedChart,
+  Scatter,
+  ScatterChart,
+  ZAxis,
+  TreeMap
+} from 'recharts';
 
 const Analytics = () => {
   const occupancyData = [

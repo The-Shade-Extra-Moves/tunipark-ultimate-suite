@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -79,8 +80,19 @@ const Landing = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const [showDashboardSelector, setShowDashboardSelector] = useState(false);
+
   const handleGetStarted = () => {
-    navigate('/dashboard');
+    setShowDashboardSelector(true);
+  };
+
+  const handleDashboardSelect = (dashboardType: string) => {
+    setShowDashboardSelector(false);
+    if (dashboardType === 'ai') {
+      navigate('/ai-dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   const scrollToSection = (elementRef) => {
@@ -1856,6 +1868,102 @@ const Landing = () => {
           </button>
         </div>
       </div>
+
+      {/* Dashboard Selection Modal */}
+      <Dialog open={showDashboardSelector} onOpenChange={setShowDashboardSelector}>
+        <DialogContent className={`
+          max-w-2xl
+          ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}
+        `}>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+              Choose Your Dashboard Experience
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+            {/* Classic Dashboard */}
+            <Card 
+              className={`
+                cursor-pointer transition-all duration-300 hover:scale-105 group
+                ${isDarkMode 
+                  ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-700/50' 
+                  : 'bg-gray-50/50 border-gray-200/50 hover:bg-gray-100/50'
+                }
+                backdrop-blur-xl hover:shadow-xl hover:shadow-blue-500/10
+              `}
+              onClick={() => handleDashboardSelect('classic')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className={`
+                  w-16 h-16 mx-auto mb-4 rounded-xl 
+                  bg-gradient-to-r from-blue-500 to-cyan-500
+                  flex items-center justify-center
+                  group-hover:scale-110 transition-transform
+                `}>
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </div>
+                <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Classic Dashboard
+                </h3>
+                <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Full-featured dashboard with comprehensive parking management tools and analytics
+                </p>
+                <Badge className="bg-blue-500/20 text-blue-400 border-0">
+                  Recommended for Most Users
+                </Badge>
+              </CardContent>
+            </Card>
+
+            {/* AI Dashboard */}
+            <Card 
+              className={`
+                cursor-pointer transition-all duration-300 hover:scale-105 group
+                ${isDarkMode 
+                  ? 'bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 hover:bg-purple-800/30' 
+                  : 'bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200/50 hover:bg-purple-100/50'
+                }
+                backdrop-blur-xl hover:shadow-xl hover:shadow-purple-500/20
+              `}
+              onClick={() => handleDashboardSelect('ai')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className={`
+                  w-16 h-16 mx-auto mb-4 rounded-xl 
+                  bg-gradient-to-r from-purple-500 to-pink-600
+                  flex items-center justify-center
+                  group-hover:scale-110 transition-transform
+                  relative
+                `}>
+                  <Brain className="w-8 h-8 text-white" />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-pulse" />
+                </div>
+                <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  AI Dashboard 2.0
+                </h3>
+                <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Next-generation AI-powered dashboard with advanced user management and intelligent insights
+                </p>
+                <div className="flex gap-2 justify-center">
+                  <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400 border-0">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    AI-Powered
+                  </Badge>
+                  <Badge className="bg-green-500/20 text-green-400 border-0">
+                    New
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center p-4 border-t border-gray-200/10">
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              You can always switch between dashboards later from the main menu
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

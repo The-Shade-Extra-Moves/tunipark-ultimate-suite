@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import AIDashboard from "./pages/ai-dashboard/AIDashboard";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/ai-dashboard" element={<AIDashboard />} />
           <Route path="/parking-spaces" element={<ParkingSpaces />} />
           <Route path="/live-status" element={<LiveStatus />} />
           <Route path="/reservations" element={<Reservations />} />
