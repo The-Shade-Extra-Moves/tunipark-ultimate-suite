@@ -1,0 +1,29 @@
+# Netlify SPA routing configuration for TuniPark Dashboard
+# Handles client-side routing for React Router
+
+# API routes (if you have backend endpoints)
+/api/*  /api/:splat  200
+
+# Authentication redirects
+/auth/*  /auth/:splat  200
+
+# Dashboard routes - redirect all to index.html for client-side routing
+/dashboard/*  /index.html  200
+/ai-dashboard/*  /index.html  200
+/parking-spaces/*  /index.html  200
+/analytics/*  /index.html  200
+/revenue/*  /index.html  200
+/iot-devices/*  /index.html  200
+/settings/*  /index.html  200
+/users/*  /index.html  200
+/reservations/*  /index.html  200
+/live-status/*  /index.html  200
+/subscription/*  /index.html  200
+
+# Auth pages
+/login  /index.html  200
+/register  /index.html  200
+/forgot-password  /index.html  200
+
+# Catch-all: send all other requests to index.html for client-side routing
+/*  /index.html  200
